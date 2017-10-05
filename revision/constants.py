@@ -7,12 +7,16 @@
     :license: MIT, see LICENSE for more details.
 """
 
+import os
+
 __all__ = (
     "ARCHIVE_IGNORE_FILES",
     "DATETIME_FORMAT",
     "MESSAGE_LINE_SEPARATOR",
     "MESSAGE_NEW_LINE",
-    "MESSAGE_TEMPLATE"
+    "MESSAGE_TEMPLATE",
+    "REVISION_HOME",
+    "TMP_DIR"
 )
 
 
@@ -33,3 +37,7 @@ MESSAGE_TEMPLATE = """# Please enter the commit message for your changes.
 
 [MESSAGE]
 """
+
+REVISION_HOME = os.path.expanduser('~/.revision')
+
+TMP_DIR = "/tmp"

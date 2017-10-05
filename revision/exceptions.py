@@ -12,6 +12,8 @@ from __future__ import absolute_import
 __all__ = (
     "ClientNotExist",
     "ConfigNotFound",
+    "InvalidArgType",
+    "MissingConfigValue"
 )
 
 
@@ -33,4 +35,11 @@ class InvalidArgType(Exception):
 
     description = (
         "invalid type argument of "
+    )
+
+
+class MissingConfigValue(Exception):
+
+    description = (
+        "missing config value "
     )

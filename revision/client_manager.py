@@ -16,32 +16,25 @@ __all__ = (
 
 class ClientManager(dict):
 
-    items = {}
-
-    def prepare(self, clients):
+    def __init__(self, clients=None):
         """
         :param clients:
         :type clients: list
         """
-        if not isinstance(clients, list):
-            raise RuntimeError("")
-
-        for config in clients:
-            self.add_client(self.instantiate_client(config))
+        if isinstance(clients, list):
+            for config in clients:
+                self.add_client(self.instantiate_client(config))
 
     def instantiate_client(self, config):
         """
         :param config:
         :type config: dict
-        :return:
+        :return: The instantiated class.
         :rtype: :class:`revision.client.Client`
         """
         modules = config.module.split('.')
         class_name = modules.pop()
         module_path = '.'.join(modules)
-
-        print class_name
-        print module_path
 
         client_instance = getattr(
             __import__(module_path, {}, {}, ['']),
@@ -54,26 +47,21 @@ class ClientManager(dict):
 
     def has_client(self, client_key):
         """
-        :param client_key:
+        :param client_key: The client key to check.
         :type client_key: str
-        :return:
+        :return: Returns True if client_key is found.
         :rtype: boolean
         """
-        return client_key in self.items
+        return client_key in self
 
-    def get_client(self, client_key=None):
+    def get_client(self, client_key):
         """
-        :param client_key:
+        :param client_key: The client key to get.
         :type client_key: str
         :return:
         :rtype: :class:`revision.client.Client`
         """
-        client = None
-
-        if client_key and self.has_client(client_key):
-            client = self.items[client_key]
-
-        return client
+        return self.get(client_key, None)
 
     def add_client(self, client):
         """
@@ -88,6 +76,6 @@ class ClientManager(dict):
         if self.has_client(client.key):
             return
 
-        self.items[client.key] = client
+        self[client.key] = client
 
         return self

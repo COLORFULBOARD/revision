@@ -4,80 +4,76 @@ from revision.client_manager import ClientManager
 from revision.config import Config
 from revision.mixins import DotDictMixin
 
+dummy_client = {
+    "key": "dummy",
+    "module": "revision.test.DummyClient",
+    "dir_path": "./tests/data",
+    "revision_file": "CHANGELOG.md"
+}
+
 config = Config({
-    "clients": [
-        {
-            "key": "dataset",
-            "module": "revision.test.DummyClient",
-            "dir_path": "./tests/data",
-            "revision_file": "CHANGELOG.md"
-        }
-    ]
+    "clients": [ dummy_client ]
 })
 
 def test_client_manager_prepare():
-    manager = ClientManager()
-    manager.prepare(config.clients)
+    manager = ClientManager(config.clients)
 
-    assert len(manager.items) == 1
-    assert "dataset" in manager.items
-    assert isinstance(manager.items['dataset'], Client)
+    assert len(manager) == 1
+    assert "dummy" in manager
+    assert isinstance(manager["dummy"], Client)
+
+    client = manager.get_client("dummy")
+    client.state.clear()
 
 def test_client_manager_instantiate_client():
     manager = ClientManager()
-    client = manager.instantiate_client(DotDictMixin({
-        "key": "dataset",
-        "module": "revision.test.DummyClient",
-        "dir_path": "./tests/data",
-        "revision_file": "CHANGELOG.md"
-    }))
+    client = manager.instantiate_client(DotDictMixin(dummy_client))
 
     assert isinstance(client, Client)
-    assert client.name == "Dummy storage for testing"
-    assert client.key == "dataset"
-    assert client.client_key == "test"
+    assert client.key == "dummy"
+
+    client.state.clear()
 
 def test_client_manager_has_client():
-    manager = ClientManager()
-    manager.prepare(config.clients)
+    manager = ClientManager(config.clients)
 
-    assert manager.has_client("dataset")
-
+    assert manager.has_client("dummy") is True
     assert manager.has_client("failed_key") is False
 
-def test_client_manager_get_client():
-    manager = ClientManager()
-    manager.prepare(config.clients)
+    client = manager.get_client("dummy")
+    client.state.clear()
 
-    client = manager.get_client("dataset")
+def test_client_manager_get_client():
+    manager = ClientManager(config.clients)
+
+    client = manager.get_client("dummy")
 
     assert isinstance(client, Client)
     assert client.name == "Dummy storage for testing"
-    assert client.key == "dataset"
+    assert client.key == "dummy"
     assert client.client_key == "test"
+
+    client.state.clear()
 
     client = manager.get_client("failed_key")
 
     assert client is None
 
-def test_client_manager_get_client():
+def test_client_manager_add_client():
     manager = ClientManager()
 
-    client = manager.instantiate_client(DotDictMixin({
-        "key": "dataset",
-        "module": "revision.test.DummyClient",
-        "dir_path": "./tests/data",
-        "revision_file": "CHANGELOG.md"
-    }))
+    client = manager.instantiate_client(DotDictMixin(dummy_client))
 
     manager.add_client(client)
 
-    assert len(manager.items) == 1
-    assert "dataset" in manager.items
+    assert len(manager) == 1
+    assert "dummy" in manager
 
-    client = manager.get_client("dataset")
+    client = manager.get_client("dummy")
 
     assert isinstance(client, Client)
     assert client.name == "Dummy storage for testing"
-    assert client.key == "dataset"
+    assert client.key == "dummy"
     assert client.client_key == "test"
+
+    client.state.clear()
