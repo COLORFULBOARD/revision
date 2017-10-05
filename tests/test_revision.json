@@ -1,0 +1,10 @@
+{
+    "clients": [
+        {
+            "key": "dataset",
+            "module": "revision.test.DummyClient",
+            "dir_path": "./tests/data",
+            "revision_file": "CHANGELOG.md"
+        }
+    ]
+}

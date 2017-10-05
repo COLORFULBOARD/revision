@@ -1,0 +1,9 @@
+
+.cache
+*.py[co]
+
+build
+dist
+*.egg-info
+
+!.gitkeep
