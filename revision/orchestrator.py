@@ -71,7 +71,6 @@ class Orchestrator(object):
         if not isinstance(revision, Revision):
             raise InvalidArgType()
 
-
         if not self.current_client:
             return
 

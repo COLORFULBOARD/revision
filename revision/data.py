@@ -114,7 +114,7 @@ class Revision(object):
             'release_date': self.release_date.strftime(DATETIME_FORMAT),
             'description': self.description,
             'message': self.message
-        },indent=2)
+        }, indent=2)
 
     def to_markdown(self):
         """
