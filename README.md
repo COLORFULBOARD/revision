@@ -28,6 +28,14 @@ $ make lint
 $ make test
 ```
 
+## Usage
+
+Revision expects a configuration file to be present in the project root.
+
+```sh
+$ revision init
+```
+
 ## License
 
 Revision is licensed under MIT License. See [LICENSE](https://github.com/COLORFULBOARD/revision/blob/master/LICENSE) for more information.
