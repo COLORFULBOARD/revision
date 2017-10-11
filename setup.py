@@ -13,8 +13,11 @@ with open('revision/__init__.py', 'rb') as f:
     ).group(1)))
 
 setup(
-    name="revision",
+    name='revision',
     version=version,
+    author='COLORFUL BOARD Inc.',
+    url='https://github.com/COLORFULBOARD/revision',
+    license='MIT',
     packages=find_packages(),
     install_requires=[
         'click==6.7',
@@ -29,11 +32,12 @@ setup(
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7'
+        'Programming Language :: Python :: 2.7',
+        'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     entry_points={'console_scripts': [
         'revision=revision.cli:main'
