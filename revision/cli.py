@@ -56,13 +56,9 @@ def init():
 
 @cli.command()
 @pass_orchestrator
-def push(orchestrator):
+def commit(orchestrator):
     if orchestrator.current_client:
-        client = orchestrator.current_client
-
         message = edit(MESSAGE_TEMPLATE)
-
-        print message
 
         if message is None:
             return
@@ -76,9 +72,25 @@ def push(orchestrator):
             message=message
         )
 
-        client.save(revision)
-        client.write()
-        client.upload()
+        orchestrator.commit(revision)
+    else:
+        echo(style(
+            "please specify `client_key` for commit command.",
+            fg="green"
+        ), err=True)
+
+
+@cli.command()
+@pass_orchestrator
+def push(orchestrator):
+    if orchestrator.current_client:
+        if orchestrator.has_commit():
+            orchestrator.push()
+        else:
+            echo(style(
+                "",
+                fg="green"
+            ), err=True)
     else:
         echo(style(
             "please specify `client_key` for push command.",

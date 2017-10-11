@@ -10,6 +10,7 @@
 from __future__ import absolute_import
 
 import datetime
+import json
 
 from revision.constants import (
     DATETIME_FORMAT,
@@ -54,9 +55,14 @@ class Revision(object):
         :type message: str
         """
         self.revision_id = revision_id
-        self.release_date = release_date
         self.description = description
         self.message = message
+
+        if release_date is not None:
+            self.release_date = datetime.datetime.strptime(
+                release_date,
+                DATETIME_FORMAT
+            )
 
     @classmethod
     def create(cls, description="", message=""):
@@ -102,7 +108,15 @@ class Revision(object):
         self.description = elements[1]
         self.message = elements[2]
 
-    def to_str(self):
+    def to_json(self):
+        return json.dumps({
+            'revision_id': self.revision_id,
+            'release_date': self.release_date.strftime(DATETIME_FORMAT),
+            'description': self.description,
+            'message': self.message
+        }, indent=2)
+
+    def to_markdown(self):
         """
         :return:
         :rtype: str

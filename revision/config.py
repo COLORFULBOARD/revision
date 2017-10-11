@@ -12,14 +12,17 @@ from __future__ import absolute_import
 import json
 import os
 
-from revision.exceptions import ConfigNotFound
+from revision.exceptions import (
+    ConfigNotFound,
+    MissingConfigValue
+)
 from revision.mixins import DotDictMixin
 
 __all__ = (
     "DEFAULT_CONFIG_FILENAME",
     "DEFAULT_CONFIG_TMPL",
     "Config",
-    "get_config",
+    "read_config",
 )
 
 
@@ -29,24 +32,37 @@ DEFAULT_CONFIG_TMPL = {
     "clients": []
 }
 
+DEFAULT_REVISION_FILENAME = "CHANGELOG.md"
+
 
 config = None
 
 
 class Config(DotDictMixin):
 
+    def prepare(self):
+        for client in self.clients:
+            if 'revision_file' not in client:
+                client.revision_file = DEFAULT_REVISION_FILENAME
+
+            if 'key' not in client:
+                raise MissingConfigValue()
+
+            if 'module' not in client:
+                raise MissingConfigValue()
+
     def __repr__(self):
         obj = '{' + ', '.join('%r: %r' % i for i in self.iteritems()) + '}'
         return "<class 'revision.config.Config'> {}".format(obj)
 
 
-def get_config(project_root_path, config_path_or_dict=None):
+def read_config(config_path_or_dict=None):
     """
-    :param project_root_path:
-    :type project_root_path: str
+    Read config from given path string or dict object.
+
     :param config_path_or_dict:
     :type config_path_or_dict: str or dict
-    :return:
+    :return: The config object or None.
     :rtype: :class:`revision.config.Config`
     """
     global config
@@ -55,19 +71,24 @@ def get_config(project_root_path, config_path_or_dict=None):
         return config
 
     if type(config_path_or_dict) == dict:
-        return Config(config_path_or_dict)
+        config = Config(config_path_or_dict)
 
     if type(config_path_or_dict) == str:
         config_path = config_path_or_dict
     else:
         config_path = os.path.join(
-            project_root_path,
+            os.getcwd(),
             DEFAULT_CONFIG_FILENAME
         )
 
     if os.path.exists(config_path):
         with open(config_path, 'r') as f:
             data = json.load(f)
-            return Config(data)
+            config = Config(data)
 
-    raise ConfigNotFound()
+    if config is None:
+        raise ConfigNotFound()
+    else:
+        config.prepare()
+
+        return config

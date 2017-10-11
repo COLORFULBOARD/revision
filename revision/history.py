@@ -23,9 +23,9 @@ class History(object):
     #: Revisions
     revisions = []
 
-    current_index = 0
+    current_index = None
 
-    def __init__(self, revisions=[], current_index=0):
+    def __init__(self, revisions=[], current_index=None):
         self.revisions = revisions
         self.current_index = current_index
 
@@ -35,6 +35,9 @@ class History(object):
         :return: The current :class:`revision.data.Revision`.
         :rtype: :class:`revision.data.Revision`
         """
+        if self.current_index is None:
+            return None
+
         return self.revisions[self.current_index]
 
     def load(self, revision_path):

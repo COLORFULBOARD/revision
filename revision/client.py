@@ -13,10 +13,16 @@ from functools import wraps
 import os
 
 from revision.archiver import Archiver
-from revision.constants import MESSAGE_LINE_SEPARATOR
+from revision.constants import (
+    MESSAGE_LINE_SEPARATOR,
+    REVISION_HOME,
+    TMP_DIR
+)
 from revision.data import Revision
-from revision.history import History
+from revision.exceptions import InvalidArgType
 from revision.file_transfer import FileTransfer
+from revision.history import History
+from revision.state import State
 
 __all__ = (
     "download_required",
@@ -50,6 +56,8 @@ class Client(object):
     #: See :class:`revision.history.History` for more information.
     history = None
 
+    state = None
+
     def __init__(self, config=None):
         """
         :param config:
@@ -58,6 +66,7 @@ class Client(object):
         self.archiver = Archiver()
         self.transfer = FileTransfer()
         self.history = History()
+        self.state = State.create()
 
         if config:
             self.add_config(config)
@@ -74,8 +83,15 @@ class Client(object):
         self.archiver.target_path = self.dest_path
         self.archiver.zip_path = self.tmp_file_path
 
-        if os.path.exists(self.revfile_path):
+        if self.has_revision_file():
             self.history.load(self.revfile_path)
+
+        self.state.state_path = os.path.join(
+            REVISION_HOME,
+            "clients",
+            self.key
+        )
+        self.state.prepare()
 
         self.post_configure()
 
@@ -141,6 +157,16 @@ class Client(object):
         """
         return os.path.exists(self.infofile_path)
 
+    def has_commit(self):
+        """
+        :return:
+        :rtype: boolean
+        """
+        current_revision = self.history.current_revision
+        revision_id = self.state.revision_id
+
+        return current_revision.revision_id == revision_id
+
     @property
     def revfile_path(self):
         """
@@ -171,7 +197,7 @@ class Client(object):
         """
         return os.path.normpath(os.path.join(
             os.getcwd(),
-            self.config['dir_path']
+            self.config.dir_path
         ))
 
     @property
@@ -181,7 +207,7 @@ class Client(object):
         :rtype: str
         """
         return os.path.normpath(os.path.join(
-            "/tmp",
+            TMP_DIR,
             self.filename
         ))
 
@@ -190,15 +216,24 @@ class Client(object):
         :param revision:
         """
         if not isinstance(revision, Revision):
-            raise RuntimeError("")
+            raise InvalidArgType()
+
+        self.state.update(revision)
+
+    def write(self):
+        revision = Revision(
+            revision_id=self.state.revision['revision_id'],
+            release_date=self.state.revision['release_date'],
+            description=self.state.revision['description'],
+            message=self.state.revision['message']
+        )
 
         self.history.prepend(revision)
 
-    def write(self):
         with open(self.revfile_path, 'w') as f:
             f.write("# CHANGELOG" + MESSAGE_LINE_SEPARATOR)
             for revision in self.history.revisions:
-                f.write(revision.to_str())
+                f.write(revision.to_markdown())
 
     def download(self):
         raise NotImplementedError()
