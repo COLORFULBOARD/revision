@@ -1,5 +1,6 @@
 
 .cache
+.idea
 *.py[co]
 
 build
