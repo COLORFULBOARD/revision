@@ -147,7 +147,7 @@ class Client(object):
         """
         filename = self.key
 
-        if self.has_revision_file():
+        if self.has_revision_file() and self.history.current_revision:
             filename += "-"
             filename += self.history.current_revision.revision_id
 
