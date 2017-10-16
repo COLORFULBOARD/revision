@@ -257,7 +257,8 @@ class Client(object):
             return False
 
     def has_new_revision(self):
-        return self.state.revision_id != self.history.current_revision.revision_id
+        current_revision_id = self.history.current_revision.revision_id
+        return self.state.revision_id != current_revision_id
 
     def download(self):
         raise NotImplementedError()

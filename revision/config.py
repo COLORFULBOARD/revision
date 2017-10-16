@@ -74,7 +74,7 @@ def read_config(config_path_or_dict=None):
         config = Config(config_path_or_dict)
 
     if type(config_path_or_dict) == str or \
-        type(config_path_or_dict) == unicode:
+       type(config_path_or_dict) == unicode:
 
         if os.path.isabs(config_path_or_dict):
             config_path = config_path_or_dict

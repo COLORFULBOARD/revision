@@ -11,15 +11,12 @@
 
 from __future__ import absolute_import
 
-import os
-
 from revision.client_manager import ClientManager
 from revision.config import read_config
 from revision.data import Revision
 from revision.exceptions import (
     ClientNotExist,
     ClientNotSpecified,
-    ConfigNotFound,
     InvalidArgType
 )
 
