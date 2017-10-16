@@ -8,6 +8,7 @@
 """
 
 from revision.client import Client
+from revision.exceptions import InvalidArgType
 
 __all__ = (
     "ClientManager",
@@ -18,7 +19,7 @@ class ClientManager(dict):
 
     def __init__(self, clients=None):
         """
-        :param clients:
+        :param clients: An list of Client instances.
         :type clients: list
         """
         if isinstance(clients, list):
@@ -27,7 +28,7 @@ class ClientManager(dict):
 
     def instantiate_client(self, config):
         """
-        :param config:
+        :param config: The config object.
         :type config: dict
         :return: The instantiated class.
         :rtype: :class:`revision.client.Client`
@@ -47,7 +48,7 @@ class ClientManager(dict):
 
     def has_client(self, client_key):
         """
-        :param client_key: The client key to check.
+        :param client_key: The client key.
         :type client_key: str
         :return: Returns True if client_key is found.
         :rtype: boolean
@@ -56,26 +57,31 @@ class ClientManager(dict):
 
     def get_client(self, client_key):
         """
-        :param client_key: The client key to get.
+        :param client_key: The client key.
         :type client_key: str
-        :return:
+        :return: Returns client instance or None if not found.
         :rtype: :class:`revision.client.Client`
         """
         return self.get(client_key, None)
 
     def add_client(self, client):
         """
-        :param client:
+        Adds the specified client to this manager.
+
+        :param client: The client to add into this manager.
         :type client: :class:`revision.client.Client`
-        :return:
+        :return: The ClientManager instance (method chaining)
         :rtype: :class:`revision.client_manager.ClientManager`
         """
         if not isinstance(client, Client):
-            return
+            raise InvalidArgType()
 
         if self.has_client(client.key):
-            return
+            return self
 
         self[client.key] = client
 
         return self
+
+    def __repr__(self):
+        return "<class 'revision.client_manager.ClientManager'>"

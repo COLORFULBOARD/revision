@@ -16,6 +16,7 @@ from revision.constants import (
     DATETIME_FORMAT,
     MESSAGE_LINE_SEPARATOR
 )
+from revision.exceptions import InvalidArgType
 from revision.util import make_hash_id
 
 __all__ = (
@@ -141,6 +142,12 @@ class Revision(object):
         :rtype: boolean
         """
         return len(self.message) > 0
+
+    def __eq__(self, revision):
+        if not isinstance(revision, Revision):
+            raise InvalidArgType()
+
+        return self.revision_id == revision.revision_id
 
     def __repr__(self):
         """

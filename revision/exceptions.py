@@ -11,6 +11,7 @@ from __future__ import absolute_import
 
 __all__ = (
     "ClientNotExist",
+    "ClientNotSpecified",
     "ConfigNotFound",
     "InvalidArgType",
     "MissingConfigValue"
@@ -24,9 +25,16 @@ class ClientNotExist(Exception):
     )
 
 
+class ClientNotSpecified(Exception):
+
+    message = (
+        "client does not specified."
+    )
+
+
 class ConfigNotFound(Exception):
 
-    description = (
+    message = (
         "config file does not found."
     )
 

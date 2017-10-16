@@ -45,7 +45,7 @@ class Archiver(object):
 
     def archive(self, target_path=None, zip_path=None):
         """
-        Adds a file to a ZIP archive from a given path.
+        Writes the Zip-encoded file to a directory.
 
         :param target_path: The directory path to add.
         :type target_path: str

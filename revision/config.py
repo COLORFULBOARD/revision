@@ -35,12 +35,12 @@ DEFAULT_CONFIG_TMPL = {
 DEFAULT_REVISION_FILENAME = "CHANGELOG.md"
 
 
-config = None
-
-
 class Config(DotDictMixin):
 
-    def prepare(self):
+    def validate(self):
+        """
+        Check the value of the config attributes.
+        """
         for client in self.clients:
             if 'revision_file' not in client:
                 client.revision_file = DEFAULT_REVISION_FILENAME
@@ -49,6 +49,9 @@ class Config(DotDictMixin):
                 raise MissingConfigValue()
 
             if 'module' not in client:
+                raise MissingConfigValue()
+
+            if 'dir_path' not in client:
                 raise MissingConfigValue()
 
     def __repr__(self):
@@ -62,19 +65,24 @@ def read_config(config_path_or_dict=None):
 
     :param config_path_or_dict:
     :type config_path_or_dict: str or dict
-    :return: The config object or None.
+    :return: Returns config object or None if not found.
     :rtype: :class:`revision.config.Config`
     """
-    global config
-
-    if config is not None:
-        return config
+    config = None
 
     if type(config_path_or_dict) == dict:
         config = Config(config_path_or_dict)
 
-    if type(config_path_or_dict) == str:
-        config_path = config_path_or_dict
+    if type(config_path_or_dict) == str or \
+        type(config_path_or_dict) == unicode:
+
+        if os.path.isabs(config_path_or_dict):
+            config_path = config_path_or_dict
+        else:
+            config_path = os.path.join(
+                os.getcwd(),
+                os.path.normpath(config_path_or_dict)
+            )
     else:
         config_path = os.path.join(
             os.getcwd(),
@@ -89,6 +97,6 @@ def read_config(config_path_or_dict=None):
     if config is None:
         raise ConfigNotFound()
     else:
-        config.prepare()
+        config.validate()
 
         return config

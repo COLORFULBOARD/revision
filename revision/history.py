@@ -12,6 +12,7 @@ from __future__ import absolute_import
 import os
 
 from revision.data import Revision
+from revision.exceptions import InvalidArgType
 
 __all__ = (
     "History",
@@ -25,7 +26,7 @@ class History(object):
 
     current_index = None
 
-    def __init__(self, revisions=[], current_index=None):
+    def __init__(self, revisions=[], current_index=0):
         self.revisions = revisions
         self.current_index = current_index
 
@@ -38,17 +39,20 @@ class History(object):
         if self.current_index is None:
             return None
 
-        return self.revisions[self.current_index]
+        if len(self.revisions) > self.current_index:
+            return self.revisions[self.current_index]
+
+        return None
 
     def load(self, revision_path):
         """
-        Load resision file.
+        Load revision file.
 
         :param revision_path:
         :type revision_path: str
         """
         if not os.path.exists(revision_path):
-            raise RuntimeError("")
+            raise RuntimeError("revision file does not exist.")
 
         with open(revision_path, mode='r') as f:
             text = f.read()
@@ -65,6 +69,8 @@ class History(object):
                     raise RuntimeError("")
 
                 self.insert(revision, len(self.revisions))
+
+            # self.current_index = len(self.revisions) - 1
 
     def clear(self):
         """
@@ -110,7 +116,11 @@ class History(object):
         :type index: int
         """
         if not isinstance(revision, Revision):
-            raise RuntimeError("")
+            raise InvalidArgType()
+
+        for rev in self.revisions:
+            if rev == revision:
+                return self
 
         self.revisions.insert(index, revision)
 
