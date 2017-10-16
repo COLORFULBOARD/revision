@@ -89,6 +89,9 @@ def test_history_prepend_and_insert():
         message="message3"
     )
 
+    revision2.revision_id += "1"
+    revision3.revision_id += "2"
+
     assert len(history.revisions) == 0
 
     history.prepend(revision1)

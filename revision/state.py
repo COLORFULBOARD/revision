@@ -17,6 +17,8 @@ __all__ = (
 
 class State(object):
 
+    prepared = False
+
     state_path = None
 
     rev_id = None
@@ -39,7 +41,8 @@ class State(object):
         if os.path.exists(self.revision_path):
             with open(self.revision_path, 'r') as f:
                 text = f.read()
-                self.revision = json.loads(text)
+                if len(text) > 0:
+                    self.revision = json.loads(text)
         else:
             self._touch(self.revision_path)
 

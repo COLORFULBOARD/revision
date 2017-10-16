@@ -15,6 +15,7 @@ with open('revision/__init__.py', 'rb') as f:
 setup(
     name='revision',
     version=version,
+    description='Static assets revisioning library.',
     author='COLORFUL BOARD Inc.',
     url='https://github.com/COLORFULBOARD/revision',
     license='MIT',

@@ -13,18 +13,16 @@ import json
 import os
 import sys
 
-from click import (
-    echo,
-    edit,
-    group,
-    style
-)
+import click
 
 from revision.config import (
     DEFAULT_CONFIG_FILENAME,
     DEFAULT_CONFIG_TMPL
 )
 from revision.constants import (
+    CONSOLE_ERROR,
+    CONSOLE_INFO,
+    CONSOLE_WARNING,
     MESSAGE_LINE_SEPARATOR,
     MESSAGE_NEW_LINE,
     MESSAGE_TEMPLATE
@@ -37,88 +35,109 @@ __all__ = (
 )
 
 
-@group()
-def cli():
-    pass
+def exception_handler(exception_type, exception, traceback):
+    click.echo(
+        "{} {}: {}".format(
+            CONSOLE_ERROR,
+            exception_type.__name__,
+            exception
+        ),
+        err=True
+    )
+
+
+def create_default_config():
+    with open(DEFAULT_CONFIG_FILENAME, "w") as f:
+        json.dump(DEFAULT_CONFIG_TMPL, f, indent=2)
+
+
+@click.group()
+@click.option("--config", default=None)
+@click.option("--debug", is_flag=True)
+def cli(config, debug):
+    if config:
+        ctx = click.get_current_context()
+        ctx.obj.update({
+            'config_path': config
+        })
+
+    if debug:
+        sys.excepthook = exception_handler
 
 
 @cli.command()
 def init():
     if os.path.exists(DEFAULT_CONFIG_FILENAME):
-        echo(style(
-            "{} file always exists.".format(DEFAULT_CONFIG_FILENAME),
-            fg="green"
-        ), err=True)
+        click.echo("{} {} file always exist.".format(
+            CONSOLE_WARNING,
+            DEFAULT_CONFIG_FILENAME
+        ))
     else:
-        with open(DEFAULT_CONFIG_FILENAME, "w") as f:
-            json.dump(DEFAULT_CONFIG_TMPL, f, indent=2)
+        create_default_config()
+
+        click.echo("{} {} file is created.".format(
+            CONSOLE_INFO,
+            DEFAULT_CONFIG_FILENAME
+        ))
 
 
 @cli.command()
 @pass_orchestrator
 def commit(orchestrator):
-    if orchestrator.current_client:
-        message = edit(MESSAGE_TEMPLATE)
+    message = click.edit(MESSAGE_TEMPLATE)
 
-        if message is None:
-            return
+    if message is None:
+        return
 
-        lines = message.split(MESSAGE_LINE_SEPARATOR)
-        description = lines[1].strip(MESSAGE_NEW_LINE)
-        message = lines[2].strip(MESSAGE_NEW_LINE)
+    lines = message.split(MESSAGE_LINE_SEPARATOR)
+    description = lines[1].strip(MESSAGE_NEW_LINE)
+    message = lines[2].strip(MESSAGE_NEW_LINE)
 
-        revision = Revision.create(
-            description=description,
-            message=message
-        )
+    revision = Revision.create(
+        description=description,
+        message=message
+    )
 
-        orchestrator.commit(revision)
-    else:
-        echo(style(
-            "please specify `client_key` for commit command.",
-            fg="green"
-        ), err=True)
+    orchestrator.commit(revision)
+
+    click.echo("{} created new commit: \n\n{}".format(
+        CONSOLE_INFO,
+        revision.to_markdown()
+    ))
 
 
 @cli.command()
 @pass_orchestrator
 def push(orchestrator):
-    if orchestrator.current_client:
-        if orchestrator.has_commit():
-            orchestrator.push()
-        else:
-            echo(style(
-                "",
-                fg="green"
-            ), err=True)
-    else:
-        echo(style(
-            "please specify `client_key` for push command.",
-            fg="green"
-        ), err=True)
+    orchestrator.push()
 
 
 @cli.command()
 @pass_orchestrator
 def pull(orchestrator):
-    if orchestrator.current_client:
-        orchestrator.current_client.download()
-    else:
-        for key, _ in orchestrator.clients:
-            if not orchestrator.clients.has_client(key):
-                continue
-
-            client = orchestrator.clients.get_client(key)
-            client.download()
+    orchestrator.pull()
 
 
 def main():
     client_key = None
 
-    if len(sys.argv) >= 2 and not (sys.argv[1] in cli.commands.keys()):
-        client_key = sys.argv[1]
+    if len(sys.argv) >= 2:
+        i = 0
+        subcmd = cli.commands.keys()
+        for arg in sys.argv:
+            i += 1
 
-        sys.argv.pop(1)
+            if i == 1:
+                continue
+            if len(arg) and arg[:2] == '--':
+                continue
+            if arg in subcmd:
+                continue
+
+            client_key = arg
+            sys.argv.pop(i - 1)
+
+            break
 
     cli(obj={
         "client_key": client_key

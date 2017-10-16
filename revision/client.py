@@ -41,6 +41,8 @@ def download_required(func):
 
 class Client(object):
 
+    prepared = False
+
     #: Client config object.
     config = None
 
@@ -80,11 +82,11 @@ class Client(object):
 
         self.config = config
 
-        self.archiver.target_path = self.dest_path
-        self.archiver.zip_path = self.tmp_file_path
-
         if self.has_revision_file():
             self.history.load(self.revfile_path)
+
+        self.archiver.target_path = self.dest_path
+        self.archiver.zip_path = self.tmp_file_path
 
         self.state.state_path = os.path.join(
             REVISION_HOME,
@@ -95,6 +97,8 @@ class Client(object):
 
         self.post_configure()
 
+        self.prepared = True
+
     def pre_configure(self):
         pass
 
@@ -104,6 +108,8 @@ class Client(object):
     @property
     def name(self):
         """
+        The name of the client.
+
         :return:
         :rtype: str
         """
@@ -139,9 +145,15 @@ class Client(object):
         :return:
         :rtype: str
         """
-        return "{}.zip".format(
-            self.key
-        )
+        filename = self.key
+
+        if self.has_revision_file() and self.history.current_revision:
+            filename += "-"
+            filename += self.history.current_revision.revision_id
+
+        filename += ".zip"
+
+        return filename
 
     def has_revision_file(self):
         """
@@ -165,12 +177,12 @@ class Client(object):
         current_revision = self.history.current_revision
         revision_id = self.state.revision_id
 
-        return current_revision.revision_id == revision_id
+        return current_revision.revision_id != revision_id
 
     @property
     def revfile_path(self):
         """
-        :return:
+        :return: The full path of revision file.
         :rtype: str
         """
         return os.path.normpath(os.path.join(
@@ -192,13 +204,16 @@ class Client(object):
     @property
     def dest_path(self):
         """
-        :return:
+        :return: The destination path.
         :rtype: str
         """
-        return os.path.normpath(os.path.join(
-            os.getcwd(),
-            self.config.dir_path
-        ))
+        if os.path.isabs(self.config.dir_path):
+            return self.config.dir_path
+        else:
+            return os.path.normpath(os.path.join(
+                os.getcwd(),
+                self.config.dir_path
+            ))
 
     @property
     def tmp_file_path(self):
@@ -214,6 +229,7 @@ class Client(object):
     def save(self, revision):
         """
         :param revision:
+        :type revision: :class:`revision.data.Revision`
         """
         if not isinstance(revision, Revision):
             raise InvalidArgType()
@@ -221,19 +237,28 @@ class Client(object):
         self.state.update(revision)
 
     def write(self):
-        revision = Revision(
-            revision_id=self.state.revision['revision_id'],
-            release_date=self.state.revision['release_date'],
-            description=self.state.revision['description'],
-            message=self.state.revision['message']
-        )
+        if self.has_new_revision():
+            revision = Revision(
+                revision_id=self.state.revision['revision_id'],
+                release_date=self.state.revision['release_date'],
+                description=self.state.revision['description'],
+                message=self.state.revision['message']
+            )
 
-        self.history.prepend(revision)
+            self.history.prepend(revision)
 
-        with open(self.revfile_path, 'w') as f:
-            f.write("# CHANGELOG" + MESSAGE_LINE_SEPARATOR)
-            for revision in self.history.revisions:
-                f.write(revision.to_markdown())
+            with open(self.revfile_path, 'w') as f:
+                f.write("# CHANGELOG" + MESSAGE_LINE_SEPARATOR)
+                for revision in self.history.revisions:
+                    f.write(revision.to_markdown())
+
+            return True
+        else:
+            return False
+
+    def has_new_revision(self):
+        current_revision_id = self.history.current_revision.revision_id
+        return self.state.revision_id != current_revision_id
 
     def download(self):
         raise NotImplementedError()
@@ -242,12 +267,14 @@ class Client(object):
         raise NotImplementedError()
 
     def __repr__(self):
-        return "<class {}.{}> " \
-               "name: {}, " \
-               "key: {}, " \
-               "config: {}".format(
-                   self.__module__,
-                   self.__class__.__name__,
-                   self.name,
-                   self.key,
-                   self.config)
+        result = "<class {}.{}> ".format(
+            self.__module__,
+            self.__class__.__name__
+        )
+
+        if self.prepared:
+            result += "name: {}".format(self.name)
+            result += "key: {}".format(self.key)
+            result += "config: {}".format(self.config)
+
+        return result

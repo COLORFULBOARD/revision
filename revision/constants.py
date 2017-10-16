@@ -9,8 +9,13 @@
 
 import os
 
+import click
+
 __all__ = (
     "ARCHIVE_IGNORE_FILES",
+    "CONSOLE_ERROR",
+    "CONSOLE_INFO",
+    "CONSOLE_WARNING",
     "DATETIME_FORMAT",
     "MESSAGE_LINE_SEPARATOR",
     "MESSAGE_NEW_LINE",
@@ -24,6 +29,10 @@ ARCHIVE_IGNORE_FILES = [
     ".gitkeep",
     ".DS_Store"
 ]
+
+CONSOLE_ERROR = click.style("ERROR", bg="red")
+CONSOLE_INFO = click.style("INFO", bg="green", fg="black")
+CONSOLE_WARNING = click.style("WARNING", bg="yellow", fg="black")
 
 DATETIME_FORMAT = "%Y/%m/%d %H:%M:%S"
 
