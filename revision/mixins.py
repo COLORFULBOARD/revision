@@ -7,6 +7,9 @@
     :license: MIT, see LICENSE for more details.
 """
 
+from six import iteritems
+
+
 __all__ = (
     "DotDictMixin",
 )
@@ -22,7 +25,7 @@ class DotDictMixin(dict):
 
         for arg in args:
             if isinstance(arg, dict):
-                for k, v in arg.iteritems():
+                for k, v in iteritems(arg):
                     if isinstance(v, list):
                         new_list = []
                         for a in v:
