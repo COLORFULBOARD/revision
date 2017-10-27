@@ -8,6 +8,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import datetime
 import hashlib
@@ -27,4 +28,4 @@ def make_hash_id():
     :rtype: str
     """
     today = datetime.datetime.now().strftime(DATETIME_FORMAT)
-    return hashlib.sha1(today).hexdigest()
+    return hashlib.sha1(today.encode('utf-8')).hexdigest()
