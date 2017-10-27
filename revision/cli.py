@@ -82,8 +82,9 @@ def init():
 
 
 @cli.command()
+@click.option("--amend", is_flag=True)
 @pass_orchestrator
-def commit(orchestrator):
+def commit(orchestrator, amend=False):
     message = click.edit(MESSAGE_TEMPLATE)
 
     if message is None:
