@@ -30,6 +30,7 @@ def make_hash_id():
     today = datetime.datetime.now().strftime(DATETIME_FORMAT)
     return hashlib.sha1(today).hexdigest()
 
+
 def touch_file(file_path):
     """
     Create new, empty file.
