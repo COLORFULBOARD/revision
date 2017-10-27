@@ -10,6 +10,8 @@
 import json
 import os
 
+from revision.util import touch_file
+
 __all__ = (
     "State",
 )
@@ -36,7 +38,7 @@ class State(object):
             os.makedirs(self.state_path)
 
         if not os.path.exists(self.head_path):
-            self._touch(self.head_path)
+            touch_file(self.head_path)
 
         if os.path.exists(self.revision_path):
             with open(self.revision_path, 'r') as f:
@@ -44,7 +46,7 @@ class State(object):
                 if len(text) > 0:
                     self.revision = json.loads(text)
         else:
-            self._touch(self.revision_path)
+            touch_file(self.revision_path)
 
     def clear(self):
         if os.path.exists(self.revision_path):
@@ -81,6 +83,3 @@ class State(object):
 
         with open(self.revision_path, 'w') as f:
             f.write(revision.to_json())
-
-    def _touch(self, file_path):
-        open(file_path, "a").close()

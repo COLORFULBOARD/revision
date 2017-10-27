@@ -82,8 +82,10 @@ class Client(object):
 
         self.config = config
 
-        if self.has_revision_file():
-            self.history.load(self.revfile_path)
+        if not self.has_revision_file():
+            self.history.create_newfile(self.revfile_path)
+
+        self.history.load(self.revfile_path)
 
         self.archiver.target_path = self.dest_path
         self.archiver.zip_path = self.tmp_file_path

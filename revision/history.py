@@ -13,6 +13,7 @@ import os
 
 from revision.data import Revision
 from revision.exceptions import InvalidArgType
+from revision.util import touch_file
 
 __all__ = (
     "History",
@@ -43,6 +44,13 @@ class History(object):
             return self.revisions[self.current_index]
 
         return None
+
+    def create_newfile(self, revision_path):
+        """
+        Create new revision file.
+        """
+        if not os.path.exists(revision_path):
+            touch_file(revision_path)
 
     def load(self, revision_path):
         """
