@@ -23,6 +23,7 @@ from revision.exceptions import InvalidArgType
 from revision.file_transfer import FileTransfer
 from revision.history import History
 from revision.state import State
+from revision.util import touch_file
 
 __all__ = (
     "download_required",
@@ -83,7 +84,8 @@ class Client(object):
         self.config = config
 
         if not self.has_revision_file():
-            self.history.create_newfile(self.revfile_path)
+            #: Create new revision file.
+            touch_file(self.revfile_path)
 
         self.history.load(self.revfile_path)
 
