@@ -59,10 +59,12 @@ class Orchestrator(object):
 
         return self
 
-    def commit(self, revision):
+    def commit(self, revision, is_amend=False):
         """
         :param revision:
         :type revision: :class:`revision.data.Revision`
+        :param is_amend:
+        :type is_amend: boolean
         :return: The Orchestrator instance (method chaining)
         :rtype: :class:`revision.orchestrator.Orchestrator`
         """
