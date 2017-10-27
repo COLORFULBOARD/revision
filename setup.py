@@ -22,12 +22,14 @@ setup(
     packages=find_packages(),
     install_requires=[
         'click==6.7',
-        'requests==2.18.4'
+        'requests==2.18.4',
+        'six==1.11.0',
     ],
     extras_require={
         'dev': [
             'flake8==3.4.1',
-            'pytest==3.2.2'
+            'pytest==3.2.2',
+            'tox==2.9.1',
         ]
     },
     classifiers=[
@@ -38,6 +40,8 @@ setup(
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
     entry_points={'console_scripts': [
