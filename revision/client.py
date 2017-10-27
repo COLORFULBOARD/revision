@@ -23,6 +23,7 @@ from revision.exceptions import InvalidArgType
 from revision.file_transfer import FileTransfer
 from revision.history import History
 from revision.state import State
+from revision.util import touch_file
 
 __all__ = (
     "download_required",
@@ -82,8 +83,11 @@ class Client(object):
 
         self.config = config
 
-        if self.has_revision_file():
-            self.history.load(self.revfile_path)
+        if not self.has_revision_file():
+            #: Create new revision file.
+            touch_file(self.revfile_path)
+
+        self.history.load(self.revfile_path)
 
         self.archiver.target_path = self.dest_path
         self.archiver.zip_path = self.tmp_file_path
@@ -257,6 +261,13 @@ class Client(object):
             return False
 
     def has_new_revision(self):
+        """
+        :return: True if new revision exists, False if not.
+        :rtype: boolean
+        """
+        if self.history.current_revision is None:
+            return self.state.revision_id is not None
+
         current_revision_id = self.history.current_revision.revision_id
         return self.state.revision_id != current_revision_id
 
