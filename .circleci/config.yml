@@ -9,10 +9,10 @@ jobs:
       - checkout
       - run:
           name: Install dependencies
-          command: make install-dev
+          command: sudo make install-dev
       - run:
           name: Run lint
           command: make lint
       - run:
           name: Run test
-          command: make test
+          command: sudo make test
