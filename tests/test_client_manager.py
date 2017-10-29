@@ -7,7 +7,8 @@ from revision.mixins import DotDictMixin
 dummy_client = {
     "key": "dummy",
     "module": "revision.test.DummyClient",
-    "dir_path": "./tests/data",
+    "local_path": "./tests/data",
+    "remote_path": "",
     "revision_file": "CHANGELOG.md"
 }
 
