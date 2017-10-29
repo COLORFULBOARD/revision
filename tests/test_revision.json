@@ -3,7 +3,8 @@
         {
             "key": "dataset",
             "module": "revision.test.DummyClient",
-            "dir_path": "./tests/data",
+            "local_path": "./tests/data",
+            "remote_path": "",
             "revision_file": "CHANGELOG.md"
         }
     ]

@@ -26,7 +26,8 @@ def test_read_config():
             {
                 "key": "dataset",
                 "module": "revision.client.DummyClient",
-                "dir_path": "./tests/data",
+                "local_path": "./tests/data",
+                "remote_path": "",
                 "revision_file": "CHANGELOG.md"
             }
         ]
