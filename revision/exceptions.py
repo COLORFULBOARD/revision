@@ -47,7 +47,19 @@ class InvalidArgType(Exception):
 
 
 class MissingConfigValue(Exception):
+    """
+    Exception when there is not enough value in config.
+    """
 
-    description = (
-        "missing config value "
-    )
+    config_key = None
+
+    def __init__(self, config_key):
+        Exception.__init__(self)
+
+        self.config_key = config_key
+
+    @property
+    def message(self):
+        return (
+            "missing config value: {}".format(self.config_key)
+        )

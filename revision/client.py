@@ -211,12 +211,12 @@ class Client(object):
         :return: The destination path.
         :rtype: str
         """
-        if os.path.isabs(self.config.dir_path):
-            return self.config.dir_path
+        if os.path.isabs(self.config.local_path):
+            return self.config.local_path
         else:
             return os.path.normpath(os.path.join(
                 os.getcwd(),
-                self.config.dir_path
+                self.config.local_path
             ))
 
     @property

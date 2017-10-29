@@ -17,7 +17,8 @@ from revision.data import Revision
 from revision.exceptions import (
     ClientNotExist,
     ClientNotSpecified,
-    InvalidArgType
+    InvalidArgType,
+    MissingConfigValue
 )
 
 __all__ = (
