@@ -26,6 +26,11 @@ __all__ = (
 
 
 class Orchestrator(object):
+    """
+    End-to-end revision controller for all clients.
+    Load configurations and exec them push and pull to
+    specified history of clients.
+    """
 
     #: The class that is used for client instances.
     #: See :class:`revision.client_manager.ClientManager` for more information.
@@ -47,7 +52,7 @@ class Orchestrator(object):
 
     def use(self, client_key):
         """
-        :param client_key:
+        :param client_key: Specified client key.
         :type client_key: str
         :return: The Orchestrator instance (method chaining)
         :rtype: :class:`revision.orchestrator.Orchestrator`
@@ -65,7 +70,7 @@ class Orchestrator(object):
         :type revision: :class:`revision.data.Revision`
         :param is_amend:
         :type is_amend: boolean
-        :return: The Orchestrator instance (method chaining)
+        :return: The Orchestrator instance (for method chaining)
         :rtype: :class:`revision.orchestrator.Orchestrator`
         """
         if not isinstance(revision, Revision):
@@ -96,6 +101,8 @@ class Orchestrator(object):
 
     def has_commit(self, client_key=None):
         """
+        Return True if client has new commit.
+
         :param client_key: The client key
         :type client_key: str
         :return:
