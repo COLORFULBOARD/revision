@@ -4,7 +4,7 @@ jobs:
   build:
     working_directory: ~/revision
     docker:
-      - image: circleci/python:2.7.13
+      - image: circleci/python:3.6
     steps:
       - checkout
       - run:
@@ -15,4 +15,4 @@ jobs:
           command: make lint
       - run:
           name: Run test
-          command: make test
+          command: sudo make test

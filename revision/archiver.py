@@ -8,6 +8,7 @@
 """
 
 from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import zipfile
@@ -79,7 +80,7 @@ class Archiver(object):
                 else:
                     file_path = os.path.join(current_dir, file)
 
-                print "Archive {}".format(file)
+                print("Archive {}".format(file))
 
                 zip.write(
                     os.path.join(root, file),

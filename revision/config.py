@@ -8,6 +8,7 @@
 """
 
 from __future__ import absolute_import
+from six import string_types
 
 import json
 import os
@@ -72,11 +73,10 @@ def read_config(config_path_or_dict=None):
     """
     config = None
 
-    if type(config_path_or_dict) == dict:
+    if isinstance(config_path_or_dict, dict):
         config = Config(config_path_or_dict)
 
-    if type(config_path_or_dict) == str or \
-       type(config_path_or_dict) == unicode:
+    if isinstance(config_path_or_dict, string_types):
 
         if os.path.isabs(config_path_or_dict):
             config_path = config_path_or_dict
