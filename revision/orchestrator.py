@@ -97,7 +97,10 @@ class Orchestrator(object):
             pass
 
     def pull(self):
-        pass
+        if not self.current_client:
+            raise ClientNotSpecified()
+
+        self.current_client.download()
 
     def has_commit(self, client_key=None):
         """
