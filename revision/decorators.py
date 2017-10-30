@@ -15,7 +15,11 @@ import click
 from click.globals import get_current_context
 
 from revision.constants import CONSOLE_ERROR
-from revision.exceptions import ClientNotExist, ConfigNotFound
+from revision.exceptions import (
+    ClientNotExist,
+    ConfigNotFound,
+    MissingConfigValue
+)
 from revision.orchestrator import Orchestrator
 
 __all__ = (
@@ -32,7 +36,7 @@ def pass_orchestrator(func):
 
         try:
             orchestrator = Orchestrator(config_path)
-        except ConfigNotFound as e:
+        except (ConfigNotFound, MissingConfigValue) as e:
             return click.echo("{} {}".format(
                 CONSOLE_ERROR,
                 e.message

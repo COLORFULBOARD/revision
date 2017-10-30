@@ -17,6 +17,7 @@ from revision.constants import DATETIME_FORMAT
 
 __all__ = (
     "make_hash_id",
+    "touch_file"
 )
 
 
@@ -29,3 +30,13 @@ def make_hash_id():
     """
     today = datetime.datetime.now().strftime(DATETIME_FORMAT)
     return hashlib.sha1(today.encode('utf-8')).hexdigest()
+
+
+def touch_file(file_path):
+    """
+    Create new, empty file.
+
+    :param file_path:
+    :type file_path:
+    """
+    open(file_path, "a").close()

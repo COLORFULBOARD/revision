@@ -35,6 +35,13 @@ DEFAULT_CONFIG_TMPL = {
 
 DEFAULT_REVISION_FILENAME = "CHANGELOG.md"
 
+REQUIRED_KEYS = [
+    'key',
+    'module',
+    'local_path',
+    'remote_path'
+]
+
 
 class Config(DotDictMixin):
 
@@ -46,14 +53,9 @@ class Config(DotDictMixin):
             if 'revision_file' not in client:
                 client.revision_file = DEFAULT_REVISION_FILENAME
 
-            if 'key' not in client:
-                raise MissingConfigValue()
-
-            if 'module' not in client:
-                raise MissingConfigValue()
-
-            if 'dir_path' not in client:
-                raise MissingConfigValue()
+            for key in REQUIRED_KEYS:
+                if key not in client:
+                    raise MissingConfigValue(key)
 
     def __repr__(self):
         obj = '{' + ', '.join('%r: %r' % i for i in self.iteritems()) + '}'
