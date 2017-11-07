@@ -16,7 +16,7 @@ setup(
     name='revision',
     version=version,
     description='Static assets revisioning library.',
-    author='Sensy Inc.',
+    author='SENSY Inc.',
     url='https://github.com/COLORFULBOARD/revision',
     license='MIT',
     packages=find_packages(),
