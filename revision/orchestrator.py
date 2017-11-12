@@ -35,11 +35,13 @@ class Orchestrator(object):
     #: See :class:`revision.config.Config` for more information.
     config = None
 
+    #: See :class:`revision.client.Client` for more information.
     current_client = None
 
     def __init__(self, config_path_or_dict=None):
         """
         :param config_path_or_dict: Config path location or config object.
+        :type config_path_or_dict: str or dict
         """
         self.config = read_config(config_path_or_dict)
 
@@ -47,7 +49,7 @@ class Orchestrator(object):
 
     def use(self, client_key):
         """
-        :param client_key:
+        :param client_key: The client key.
         :type client_key: str
         :return: The Orchestrator instance (method chaining)
         :rtype: :class:`revision.orchestrator.Orchestrator`

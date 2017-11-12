@@ -1,0 +1,13 @@
+{
+  "clients": [
+    {
+      "key": "sample",
+      "module": "revision_gcs.GCSClient",
+      "local_path": "data",
+      "remote_path": "gs://tokuda-sample-tensorflow-dataset/test",
+      "options": {
+        "key_file": "gcs_key_file.json"
+      }
+    }
+  ]
+}

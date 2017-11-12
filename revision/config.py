@@ -20,20 +20,20 @@ from revision.exceptions import (
 from revision.mixins import DotDictMixin
 
 __all__ = (
-    "DEFAULT_CONFIG_FILENAME",
+    "DEFAULT_CONFIG_PATH",
     "DEFAULT_CONFIG_TMPL",
     "Config",
     "read_config",
 )
 
 
-DEFAULT_CONFIG_FILENAME = ".revision.json"
+DEFAULT_CONFIG_PATH = ".revision/config.json"
 
 DEFAULT_CONFIG_TMPL = {
     "clients": []
 }
 
-DEFAULT_REVISION_FILENAME = "CHANGELOG.md"
+DEFAULT_REVISION_FILEPATH = ".revision/{}_revisions.md"
 
 REQUIRED_KEYS = [
     'key',
@@ -50,12 +50,14 @@ class Config(DotDictMixin):
         Check the value of the config attributes.
         """
         for client in self.clients:
-            if 'revision_file' not in client:
-                client.revision_file = DEFAULT_REVISION_FILENAME
-
             for key in REQUIRED_KEYS:
                 if key not in client:
                     raise MissingConfigValue(key)
+
+            if 'revision_file' not in client:
+                client.revision_file = DEFAULT_REVISION_FILEPATH.format(
+                    client.key
+                )
 
     def __repr__(self):
         obj = '{' + ', '.join('%r: %r' % i for i in self.iteritems()) + '}'
@@ -77,7 +79,6 @@ def read_config(config_path_or_dict=None):
         config = Config(config_path_or_dict)
 
     if isinstance(config_path_or_dict, string_types):
-
         if os.path.isabs(config_path_or_dict):
             config_path = config_path_or_dict
         else:
@@ -88,7 +89,7 @@ def read_config(config_path_or_dict=None):
     else:
         config_path = os.path.join(
             os.getcwd(),
-            DEFAULT_CONFIG_FILENAME
+            DEFAULT_CONFIG_PATH
         )
 
     if os.path.exists(config_path):

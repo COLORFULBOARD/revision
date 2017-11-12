@@ -16,7 +16,7 @@ import sys
 import click
 
 from revision.config import (
-    DEFAULT_CONFIG_FILENAME,
+    DEFAULT_CONFIG_PATH,
     DEFAULT_CONFIG_TMPL
 )
 from revision.constants import (
@@ -47,7 +47,7 @@ def exception_handler(exception_type, exception, traceback):
 
 
 def create_default_config():
-    with open(DEFAULT_CONFIG_FILENAME, "w") as f:
+    with open(DEFAULT_CONFIG_PATH, "w") as f:
         json.dump(DEFAULT_CONFIG_TMPL, f, indent=2)
 
 
@@ -67,7 +67,7 @@ def cli(config, debug):
 
 @cli.command()
 def init():
-    if os.path.exists(DEFAULT_CONFIG_FILENAME):
+    if os.path.exists(DEFAULT_CONFIG_PATH):
         click.echo("{} {} file always exist.".format(
             CONSOLE_WARNING,
             DEFAULT_CONFIG_FILENAME
@@ -77,7 +77,7 @@ def init():
 
         click.echo("{} {} file is created.".format(
             CONSOLE_INFO,
-            DEFAULT_CONFIG_FILENAME
+            DEFAULT_CONFIG_PATH
         ))
 
 
