@@ -17,7 +17,8 @@ import click
 
 from revision.config import (
     DEFAULT_CONFIG_PATH,
-    DEFAULT_CONFIG_TMPL
+    DEFAULT_CONFIG_TMPL,
+    DEFAULT_REVISION_FILEPATH
 )
 from revision.constants import (
     CONSOLE_ERROR,
@@ -70,7 +71,7 @@ def init():
     if os.path.exists(DEFAULT_CONFIG_PATH):
         click.echo("{} {} file always exist.".format(
             CONSOLE_WARNING,
-            DEFAULT_CONFIG_FILENAME
+            DEFAULT_REVISION_FILEPATH
         ))
     else:
         create_default_config()

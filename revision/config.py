@@ -22,6 +22,7 @@ from revision.mixins import DotDictMixin
 __all__ = (
     "DEFAULT_CONFIG_PATH",
     "DEFAULT_CONFIG_TMPL",
+    "DEFAULT_REVISION_FILEPATH",
     "Config",
     "read_config",
 )
