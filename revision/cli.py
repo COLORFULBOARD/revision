@@ -99,7 +99,7 @@ def commit(orchestrator, amend=False):
         message=message
     )
 
-    orchestrator.commit(revision)
+    orchestrator.commit(revision, amend)
 
     click.echo("{} created new commit: \n\n{}".format(
         CONSOLE_INFO,

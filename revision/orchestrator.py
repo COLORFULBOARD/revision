@@ -79,7 +79,11 @@ class Orchestrator(object):
         if not self.current_client:
             raise ClientNotSpecified()
 
-        self.current_client.save(revision)
+        if is_amend:
+            self.current_client.save(revision)
+        else:
+            self.current_client.write()
+            self.current_client.save(revision)
 
         return self
 
