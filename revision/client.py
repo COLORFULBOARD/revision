@@ -59,11 +59,13 @@ class Client(object):
     #: See :class:`revision.history.History` for more information.
     history = None
 
+    #: The state manager.
+    #: See :class:`revision.state.State` for more information.
     state = None
 
     def __init__(self, config=None):
         """
-        :param config:
+        :param config: The config dictionary.
         :type config: dict
         """
         self.archiver = Archiver()
@@ -114,7 +116,7 @@ class Client(object):
         """
         The name of the client.
 
-        :return:
+        :return: The client name.
         :rtype: str
         """
         raise NotImplementedError()
@@ -122,7 +124,7 @@ class Client(object):
     @property
     def key(self):
         """
-        :return:
+        :return: The client key string.
         :rtype: str
         """
         return self.config.key
@@ -138,7 +140,7 @@ class Client(object):
     @property
     def is_download(self):
         """
-        :return:
+        :return: Downloaded a remote directory, or not.
         :rtype: boolean
         """
         return os.path.isdir(self.dest_path)
@@ -190,7 +192,7 @@ class Client(object):
         :rtype: str
         """
         return os.path.normpath(os.path.join(
-            self.dest_path,
+            os.getcwd(),
             self.config.revision_file
         ))
 

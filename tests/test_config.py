@@ -11,7 +11,7 @@ def test_read_config():
 
     test_revision_path = os.path.join(
         os.path.dirname(__file__),
-        'test_revision.json'
+        '.revision/config.json'
     )
 
     config = read_config(test_revision_path)
@@ -27,8 +27,7 @@ def test_read_config():
                 "key": "dataset",
                 "module": "revision.client.DummyClient",
                 "local_path": "./tests/data",
-                "remote_path": "",
-                "revision_file": "CHANGELOG.md"
+                "remote_path": ""
             }
         ]
     })
@@ -38,9 +37,15 @@ def test_read_config():
 
     #: pass nothing
 
-    revision_path = os.path.join(
+    rev_dirpath = os.path.normpath(os.path.join(
         os.path.dirname(__file__),
-        '../.revision.json'
+        '../.revision'
+    ))
+    if not os.path.isdir(rev_dirpath):
+        os.mkdir(rev_dirpath)
+    revision_path = os.path.join(
+        rev_dirpath,
+        'config.json'
     )
 
     shutil.copy2(test_revision_path, revision_path)
@@ -50,4 +55,4 @@ def test_read_config():
     assert isinstance(config, Config)
     assert config.clients[0].key == "dataset"
 
-    os.remove(revision_path)
+    shutil.rmtree(rev_dirpath)

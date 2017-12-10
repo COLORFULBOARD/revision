@@ -27,8 +27,8 @@ setup(
     ],
     extras_require={
         'dev': [
-            'flake8==3.4.1',
-            'pytest==3.2.2',
+            'flake8==3.5.0',
+            'pytest==3.3.1',
             'tox==2.9.1',
         ]
     },

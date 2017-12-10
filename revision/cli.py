@@ -16,8 +16,9 @@ import sys
 import click
 
 from revision.config import (
-    DEFAULT_CONFIG_FILENAME,
-    DEFAULT_CONFIG_TMPL
+    DEFAULT_CONFIG_PATH,
+    DEFAULT_CONFIG_TMPL,
+    DEFAULT_REVISION_FILEPATH
 )
 from revision.constants import (
     CONSOLE_ERROR,
@@ -47,7 +48,7 @@ def exception_handler(exception_type, exception, traceback):
 
 
 def create_default_config():
-    with open(DEFAULT_CONFIG_FILENAME, "w") as f:
+    with open(DEFAULT_CONFIG_PATH, "w") as f:
         json.dump(DEFAULT_CONFIG_TMPL, f, indent=2)
 
 
@@ -67,25 +68,28 @@ def cli(config, debug):
 
 @cli.command()
 def init():
-    if os.path.exists(DEFAULT_CONFIG_FILENAME):
+    if os.path.exists(DEFAULT_CONFIG_PATH):
         click.echo("{} {} file always exist.".format(
             CONSOLE_WARNING,
-            DEFAULT_CONFIG_FILENAME
+            DEFAULT_REVISION_FILEPATH
         ))
     else:
         create_default_config()
 
         click.echo("{} {} file is created.".format(
             CONSOLE_INFO,
-            DEFAULT_CONFIG_FILENAME
+            DEFAULT_CONFIG_PATH
         ))
 
 
 @cli.command()
 @click.option("--amend", is_flag=True)
 @pass_orchestrator
-def commit(orchestrator, amend=False):
-    message = click.edit(MESSAGE_TEMPLATE)
+def commit(orchestrator, amend):
+    #: Because the click checks the `VISUAL` environment variable first.
+    editor = os.environ.get('EDITOR')
+
+    message = click.edit(MESSAGE_TEMPLATE, editor=editor)
 
     if message is None:
         return
