@@ -83,6 +83,7 @@ def init():
 
 
 @cli.command()
+@click.option("--amend", is_flag=True)
 @pass_orchestrator
 def commit(orchestrator):
     #: Because the click checks the `VISUAL` environment variable first.
@@ -102,7 +103,7 @@ def commit(orchestrator):
         message=message
     )
 
-    orchestrator.commit(revision)
+    orchestrator.commit(revision, amend)
 
     click.echo("{} created new commit: \n\n{}".format(
         CONSOLE_INFO,
