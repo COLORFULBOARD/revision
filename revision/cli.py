@@ -82,8 +82,9 @@ def init():
 
 
 @cli.command()
+@click.option("--amend", is_flag=True)
 @pass_orchestrator
-def commit(orchestrator):
+def commit(orchestrator, amend=False):
     message = click.edit(MESSAGE_TEMPLATE)
 
     if message is None:
@@ -98,7 +99,7 @@ def commit(orchestrator):
         message=message
     )
 
-    orchestrator.commit(revision)
+    orchestrator.commit(revision, amend)
 
     click.echo("{} created new commit: \n\n{}".format(
         CONSOLE_INFO,
