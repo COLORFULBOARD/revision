@@ -85,7 +85,10 @@ def init():
 @cli.command()
 @pass_orchestrator
 def commit(orchestrator):
-    message = click.edit(MESSAGE_TEMPLATE)
+    #: Because the click checks the `VISUAL` environment variable first.
+    editor = os.environ.get('EDITOR')
+
+    message = click.edit(MESSAGE_TEMPLATE, editor=editor)
 
     if message is None:
         return
