@@ -85,7 +85,7 @@ def init():
 @cli.command()
 @click.option("--amend", is_flag=True)
 @pass_orchestrator
-def commit(orchestrator):
+def commit(orchestrator, amend):
     #: Because the click checks the `VISUAL` environment variable first.
     editor = os.environ.get('EDITOR')
 
