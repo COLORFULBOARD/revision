@@ -29,6 +29,7 @@ setup(
         'dev': [
             'flake8==3.5.0',
             'pytest==3.3.1',
+            'sphinx==1.6.5',
             'tox==2.9.1',
         ]
     },
