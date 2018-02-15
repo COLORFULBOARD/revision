@@ -243,22 +243,24 @@ class Client(object):
         self.state.update(revision)
 
     def write(self):
-        if self.has_new_revision():
-            return
+        if self.has_new_revision() and self.state.revision:
+            revision = Revision(
+                revision_id=self.state.revision['revision_id'],
+                release_date=self.state.revision['release_date'],
+                description=self.state.revision['description'],
+                message=self.state.revision['message']
+            )
 
-        revision = Revision(
-            revision_id=self.state.revision['revision_id'],
-            release_date=self.state.revision['release_date'],
-            description=self.state.revision['description'],
-            message=self.state.revision['message']
-        )
+            self.history.prepend(revision)
 
-        self.history.prepend(revision)
+            with open(self.revfile_path, 'w') as f:
+                f.write("# CHANGELOG" + MESSAGE_LINE_SEPARATOR)
+                for revision in self.history.revisions:
+                    f.write(revision.to_markdown())
 
-        with open(self.revfile_path, 'w') as f:
-            f.write("# CHANGELOG" + MESSAGE_LINE_SEPARATOR)
-            for revision in self.history.revisions:
-                f.write(revision.to_markdown())
+            return True
+        else:
+            return False
 
     def has_new_revision(self):
         """
