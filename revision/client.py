@@ -3,7 +3,7 @@
     revision.client
     ~~~~~~~~~~~~~~~
 
-    :copyright: (c) 2017 by SENSY Inc.
+    :copyright: (c) 2018 by SENSY Inc.
     :license: MIT, see LICENSE for more details.
 """
 
@@ -243,7 +243,7 @@ class Client(object):
         self.state.update(revision)
 
     def write(self):
-        if self.has_new_revision():
+        if self.has_new_revision() and self.state.revision:
             revision = Revision(
                 revision_id=self.state.revision['revision_id'],
                 release_date=self.state.revision['release_date'],
