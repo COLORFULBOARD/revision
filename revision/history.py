@@ -3,7 +3,7 @@
     revision.history
     ~~~~~~~~~~~~~~~~
 
-    :copyright: (c) 2017 by SENSY Inc.
+    :copyright: (c) 2018 by SENSY Inc.
     :license: MIT, see LICENSE for more details.
 """
 
