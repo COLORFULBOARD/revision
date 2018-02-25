@@ -1,6 +1,9 @@
 Revision
 ========
 
+Revision はデータをリビジョン管理するためのライブラリです。
+機械学習のデータセットや成果物を版管理することを主な目的としています。
+
 .. The User Guide
    --------------
 
@@ -11,6 +14,7 @@ Revision
    :maxdepth: 2
 
    installation
+   quickstart
    extensions
 
 API Reference
