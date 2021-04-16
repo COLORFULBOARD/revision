@@ -22,7 +22,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'click==6.7',
-        'requests==2.18.4',
+        'requests==2.20.0',
         'six==1.11.0',
     ],
     extras_require={
